@@ -1,0 +1,31 @@
+﻿@*
+    Vue partielle - Liste des étudiants regroupés par cohorte (année décroissante).
+    Appelée par AJAX depuis /Students/GetStudents.
+    Chaque <details> a un id qui contient "details" pour que RestoreDetailsState
+    puisse retrouver son état ouvert/fermé en localStorage.
+*@
+@model IEnumerable<Models.Student>
+@{
+    var grouped = Model.GroupBy(s => s.Year).OrderByDescending(g => g.Key);
+}
+
+@if (!Model.Any())
+{
+    <div class="emptyState">Aucun étudiant ne correspond à votre recherche.</div>
+}
+
+@foreach (var group in grouped)
+{
+    <details id="students_details_@group.Key" open>
+        <summary>Cohorte @group.Key</summary>
+        @foreach (var student in group)
+        {
+            <div class="studentRow">
+                <a href="/Students/Details/@student.Id" title="Voir les détails de @student.FullName">
+                    <span class="studentCode">@student.Code</span>
+                    <span class="studentName">@student.LastName @student.FirstName</span>
+                </a>
+            </div>
+        }
+    </details>
+}

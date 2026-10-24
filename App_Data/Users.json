@@ -1,0 +1,35 @@
+[
+  {
+    "Name": "Modérateur",
+    "Email": "admin@app.net",
+    "Password": "O2GYEtzXFrz+F+HNH/YxPihWIGTFLTvYad215JO7b5M=iI76Y3k2BYenrpKy+4zPuqUxVss=",
+    "Access": 3,
+    "Blocked": false,
+    "Verified": true,
+    "Notify": true,
+    "Avatar": "/App_Assets/Users/no_avatar.png",
+    "Id": 1
+  },
+  {
+    "Name": "Super Usager",
+    "Email": "super@app.net",
+    "Password": "O2GYEtzXFrz+F+HNH/YxPihWIGTFLTvYad215JO7b5M=iI76Y3k2BYenrpKy+4zPuqUxVss=",
+    "Access": 2,
+    "Blocked": false,
+    "Verified": true,
+    "Notify": true,
+    "Avatar": "/App_Assets/Users/no_avatar.png",
+    "Id": 2
+  },
+  {
+    "Name": "Usager",
+    "Email": "user@app.net",
+    "Password": "O2GYEtzXFrz+F+HNH/YxPihWIGTFLTvYad215JO7b5M=iI76Y3k2BYenrpKy+4zPuqUxVss=",
+    "Access": 1,
+    "Blocked": false,
+    "Verified": true,
+    "Notify": true,
+    "Avatar": "/App_Assets/Users/no_avatar.png",
+    "Id": 3
+  }
+]

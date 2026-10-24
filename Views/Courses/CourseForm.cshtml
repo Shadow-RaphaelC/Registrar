@@ -1,0 +1,65 @@
+﻿@*
+    Formulaire d'un cours - utilisé pour Create et Edit.
+*@
+@model Models.Course
+@{
+    bool creating = ViewBag.Creating != null && (bool)ViewBag.Creating;
+    string action = (string)ViewBag.Action ?? (creating ? "Create" : "Edit");
+    string sessionCaption = Models.NextSession.Caption;
+    string codeDisplay = string.IsNullOrEmpty(Model.Code) ? "Nouveau cours" : Model.Code;
+}
+
+<form class="form" action="/Courses/@action" method="POST">
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+
+    <details open id="courses_details_info">
+        <summary>Informations - [@codeDisplay]</summary>
+
+        <label for="Session">Session</label>
+        <input id="Session"
+               name="Session"
+               type="number"
+               min="1"
+               max="6"
+               class="form-control"
+               value="@Model.Session"
+               required
+               RequireMessage="Veuillez entrer un numéro de session"
+               InvalidMessage="La session doit être entre 1 et 6" />
+
+        <label for="Code">Sigle</label>
+        <input id="Code"
+               name="Code"
+               class="form-control"
+               placeholder="Ex. 420-KB1-LG"
+               value="@Model.Code"
+               required
+               RequireMessage="Veuillez entrer un sigle"
+               InvalidMessage="Sigle invalide"
+               CustomErrorMessage="Ce sigle est déjà utilisé"
+               pattern="^[A-Za-z0-9\-]+$" />
+
+        <label for="Title">Titre</label>
+        <input id="Title"
+               name="Title"
+               class="form-control"
+               placeholder="Titre du cours"
+               value="@Model.Title"
+               required
+               RequireMessage="Veuillez entrer un titre" />
+    </details>
+
+    @if (!creating)
+    {
+        <!-- Section Inscriptions de la prochaine session (étudiants à inscrire dans ce cours) -->
+        <details open id="courses_details_inscriptions">
+            <summary>Inscriptions : @sessionCaption</summary>
+            @Helper.SelectionLists("selectedCoursesId",
+                (System.Web.Mvc.SelectList)ViewBag.Registrations,
+                (System.Web.Mvc.SelectList)ViewBag.Students)
+        </details>
+    }
+
+    <input id="submit" type="submit" value="Enregistrer" class="btn btn-primary" style="display:none" />
+</form>

@@ -1,0 +1,56 @@
+﻿@*
+    Vue principale - Liste des cours regroupés par numéro de session ascendant (cf. PDF page 6).
+    Le contenu est rempli par /Courses/GetCourses via AutoRefreshedPanel.
+*@
+@{
+    ViewBag.PageTitle = "Cours";
+    bool search = Session["CoursesSearch"] != null && (bool)Session["CoursesSearch"];
+    string searchString = (string)(Session["CoursesSearchString"] ?? "");
+}
+
+@if (search)
+{
+    <div class="searchBar">
+        <input type="search"
+               id="searchInput"
+               class="section roundedBorder searchBarItem"
+               value="@searchString"
+               placeholder="Recherche..." />
+    </div>
+}
+
+<div id="CoursesListPanel" class="coursesListLayout">
+</div>
+
+@section Scripts {
+    <script>
+        $(() => {
+            // Panneau d'auto-refresh aux 5 secondes
+            let coursesListPanel = new AutoRefreshedPanel(
+                "CoursesListPanel",
+                "/Courses/GetCourses",
+                5,
+                coursesListPostRefresh);
+
+            let searchKeywordTimer = null;
+            let currentSearchString = "@searchString";
+
+            // Callback après rafraîchissement : restaure les <details> + surligne la recherche
+            function coursesListPostRefresh() {
+                RestoreDetailsState();
+                HighlightSearchTerm(currentSearchString);
+            }
+
+            // Recherche avec debounce de 0.3 seconde
+            $("#searchInput").on('keyup search', function () {
+                clearTimeout(searchKeywordTimer);
+                currentSearchString = $(this).val();
+                searchKeywordTimer = setTimeout(() => {
+                    coursesListPanel.command("/Courses/SetSearchString?value=" + encodeURIComponent(currentSearchString));
+                }, 300);
+            });
+            $("#searchInput").focus(() => coursesListPanel.pause());
+            $("#searchInput").blur(() => coursesListPanel.restart());
+        });
+    </script>
+}

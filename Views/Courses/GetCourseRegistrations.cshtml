@@ -1,0 +1,46 @@
+﻿@*
+    Vue partielle - Étudiants inscrits à un cours, regroupés par cohorte (année décroissante).
+    Si un enseignant est assigné à la cohorte, son nom apparaît en hyperlien (cf. PDF page 7).
+*@
+@model Models.Course
+@{
+    var grouped = Model.Registrations
+                       .Where(r => r.Student != null)
+                       .GroupBy(r => r.Year)
+                       .OrderByDescending(g => g.Key);
+}
+
+@if (!Model.Registrations.Any())
+{
+    <div class="emptyState">Aucun étudiant inscrit à ce cours.</div>
+}
+
+@foreach (var group in grouped)
+{
+    // Trouve le prof assigné à cette cohorte (Allocation pour la même année)
+    var allocation = Model.Allocations.FirstOrDefault(a => a.Year == group.Key);
+    var teacher = allocation != null ? allocation.Teacher : null;
+
+    <details id="courses_details_year_@group.Key" open>
+        <summary>
+            Cohorte @group.Key
+            @if (teacher != null)
+            {
+                <span> &mdash; </span>
+                <a href="/Teachers/Details/@teacher.Id" class="teacherInline">
+                    @teacher.LastName @teacher.FirstName
+                </a>
+            }
+        </summary>
+        @foreach (var registration in group.OrderBy(r => r.Student.LastName))
+        {
+            var student = registration.Student;
+            <div class="studentRow">
+                <a href="/Students/Details/@student.Id">
+                    <span class="studentCode">@student.Code</span>
+                    <span class="studentName">@student.LastName @student.FirstName</span>
+                </a>
+            </div>
+        }
+    </details>
+}

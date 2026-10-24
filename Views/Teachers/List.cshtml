@@ -1,0 +1,55 @@
+﻿@*
+    Vue principale - Liste des enseignants en ordre alphabétique de nom (cf. PDF page 8).
+    Le contenu est rempli par /Teachers/GetTeachers via AutoRefreshedPanel.
+*@
+@{
+    ViewBag.PageTitle = "Profs";
+    bool search = Session["TeachersSearch"] != null && (bool)Session["TeachersSearch"];
+    string searchString = (string)(Session["TeachersSearchString"] ?? "");
+}
+
+@if (search)
+{
+    <div class="searchBar">
+        <input type="search"
+               id="searchInput"
+               class="section roundedBorder searchBarItem"
+               value="@searchString"
+               placeholder="Recherche..." />
+    </div>
+}
+
+<div id="TeachersListPanel" class="teachersListLayout">
+</div>
+
+@section Scripts {
+    <script>
+        $(() => {
+            // Panneau d'auto-refresh aux 5 secondes
+            let teachersListPanel = new AutoRefreshedPanel(
+                "TeachersListPanel",
+                "/Teachers/GetTeachers",
+                5,
+                teachersListPostRefresh);
+
+            let searchKeywordTimer = null;
+            let currentSearchString = "@searchString";
+
+            // Callback après rafraîchissement
+            function teachersListPostRefresh() {
+                HighlightSearchTerm(currentSearchString);
+            }
+
+            // Recherche avec debounce de 0.3 seconde
+            $("#searchInput").on('keyup search', function () {
+                clearTimeout(searchKeywordTimer);
+                currentSearchString = $(this).val();
+                searchKeywordTimer = setTimeout(() => {
+                    teachersListPanel.command("/Teachers/SetSearchString?value=" + encodeURIComponent(currentSearchString));
+                }, 300);
+            });
+            $("#searchInput").focus(() => teachersListPanel.pause());
+            $("#searchInput").blur(() => teachersListPanel.restart());
+        });
+    </script>
+}

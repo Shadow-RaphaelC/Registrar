@@ -1,0 +1,34 @@
+﻿@*
+    Vue partielle - Inscriptions d'un étudiant regroupées par année décroissante.
+    Format d'affichage : [session] Sigle Titre (cf. PDF page 4).
+*@
+@model Models.Student
+@{
+    var grouped = Model.Registrations
+                       .Where(r => r.Course != null)
+                       .GroupBy(r => r.Year)
+                       .OrderByDescending(g => g.Key);
+}
+
+@if (!Model.Registrations.Any())
+{
+    <div class="emptyState">Aucune inscription.</div>
+}
+
+@foreach (var group in grouped)
+{
+    <details id="students_details_year_@group.Key" open>
+        <summary>@group.Key</summary>
+        @foreach (var registration in group.OrderBy(r => r.Course.Code))
+        {
+            var course = registration.Course;
+            <div class="courseRow">
+                <a href="/Courses/Details/@course.Id">
+                    <span class="courseSession">[@course.Session]</span>
+                    <span class="courseCode">@course.Code</span>
+                    <span class="courseTitle">@course.Title</span>
+                </a>
+            </div>
+        }
+    </details>
+}

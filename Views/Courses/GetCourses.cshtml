@@ -1,0 +1,28 @@
+﻿@*
+    Vue partielle - Liste des cours regroupés par numéro de session ascendant.
+*@
+@model IEnumerable<Models.Course>
+@{
+    var grouped = Model.GroupBy(c => c.Session).OrderBy(g => g.Key);
+}
+
+@if (!Model.Any())
+{
+    <div class="emptyState">Aucun cours ne correspond à votre recherche.</div>
+}
+
+@foreach (var group in grouped)
+{
+    <details id="courses_details_@group.Key" open>
+        <summary>Session @group.Key</summary>
+        @foreach (var course in group)
+        {
+            <div class="courseRow">
+                <a href="/Courses/Details/@course.Id" title="Voir les détails de @course.Title">
+                    <span class="courseCode">@course.Code</span>
+                    <span class="courseTitle">@course.Title</span>
+                </a>
+            </div>
+        }
+    </details>
+}

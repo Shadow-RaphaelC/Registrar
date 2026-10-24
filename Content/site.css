@@ -1,0 +1,187 @@
+
+.unselected {
+    text-decoration: none;
+    color: lightgray;
+}
+
+    .unselected:hover {
+        color: aqua;
+    }
+
+label {
+    margin-top: 8px;
+}
+
+a, .noDecoration {
+    color: black;
+    text-decoration: none;
+}
+
+form {
+    max-width: 10in;
+    margin: auto;
+}
+
+    form label {
+        font-weight: bold;
+    }
+
+    form input {
+        margin-bottom: 8px;
+    }
+
+
+.detailsPanel dl {
+
+    margin: auto;
+
+    font-size: 1em;
+}
+
+.detailsPanel dt {
+    color: gray;
+}
+
+.detailsPanel dd {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+fieldset {
+    border: 1px solid #ddd !important;
+    border-radius: 6px !important;
+    padding: 8px !important;
+    padding-top: 16px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom:6px;
+}
+
+legend {
+    font-size: 1.0em;
+    font-weight: bold;
+    color: #777;
+    float: none;
+    width: inherit;
+    padding: 0 6px;
+    margin-left: 6px;
+    margin-bottom: -12px;
+    transform: translate(0,-1px);
+    text-align: left;
+}
+
+input, textarea {
+    margin: 0px !important;
+}
+
+label {
+    color: #777;
+}
+
+details {
+    /* source : https://nerdy.dev/open-and-close-transitions-for-the-details-element*/
+
+    @media (prefers-reduced-motion: no-preference) {
+        interpolate-size: allow-keywords;
+    }
+
+
+    &::details-content {
+        opacity: 0;
+        block-size: 0;
+        overflow-y: clip;
+        transition: content-visibility 1s allow-discrete, opacity 0.75s, block-size 0.75s;
+    }
+
+    &[open]::details-content {
+        opacity: 1;
+        block-size: auto;
+    }
+
+    & div {
+        margin-left: 6px;
+    }
+}
+summary {
+    background: lightgray;
+    padding-left: 8px;
+    height: 34px;
+    border: 1px solid white;
+    border-radius: 6px;
+    font-weight: bold;
+
+
+    &::marker {
+        font-size: 20px;
+    }
+}
+
+.actionTitle {
+    font-size:1.3rem;
+}
+
+.highlight {
+    background-color: yellow;
+}
+/* === Tabs de navigation principale === */
+.mainTabs {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-left: 12px;
+}
+
+.mainTabs a {
+    text-decoration: none;
+    color: #888;
+    font-size: 1.4em;
+    padding: 4px 8px;
+}
+
+.mainTabs a.active {
+    color: black;
+    font-weight: bold;
+}
+
+.mainTabs a:hover {
+    color: #1a4cd6;
+}
+
+/* === Footer Session courante === */
+.footerPanel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+}
+
+.sessionCaption {
+    color: black;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.sessionCaption:hover {
+    color: #1a4cd6;
+    text-decoration: underline;
+}
+
+/* === Form helpers === */
+.radioGroup {
+    display: flex;
+    gap: 16px;
+    padding: 8px 0;
+}
+
+.radioGroup label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+/* Boutons "submit"/"cancel" du header */
+.submitCmd {
+    color: #1a4cd6;
+}

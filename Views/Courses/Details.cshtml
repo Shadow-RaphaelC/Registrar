@@ -1,0 +1,36 @@
+﻿@*
+    Vue détails d'un cours (cf. PDF page 7).
+    Affiche : sigle, session, titre, puis liste des étudiants inscrits par cohorte
+    avec le prof affecté hyperlié.
+*@
+@model Models.Course
+@{
+    ViewBag.PageTitle = "Cours - Détails";
+}
+
+<div class="courseDetailsPanel">
+    <div class="courseInfo">
+        <div class="courseCodeBig">@Model.Code</div>
+        <div class="courseSessionBig">Session @Model.Session</div>
+        <div class="courseTitleBig">@Model.Title</div>
+    </div>
+
+    <h3>Étudiants inscrits</h3>
+    <!-- Liste auto-rafraîchie pour voir les changements faits par d'autres usagers -->
+    <div id="CourseRegistrationsPanel">
+        @{ Html.RenderPartial("GetCourseRegistrations", Model); }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(() => {
+            RestoreDetailsState();
+            new AutoRefreshedPanel(
+                "CourseRegistrationsPanel",
+                "/Courses/GetCourseRegistrations",
+                5,
+                () => RestoreDetailsState());
+        });
+    </script>
+}

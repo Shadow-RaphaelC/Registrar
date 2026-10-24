@@ -1,0 +1,155 @@
+﻿/* ============================================================
+   Styles spécifiques à la section Étudiants.
+   La typo monospace pour les codes vient du PDF.
+   ============================================================ */
+
+.studentsListLayout {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.studentRow {
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.studentRow:hover {
+    background-color: aliceblue;
+}
+
+.studentRow a {
+    display: flex;
+    gap: 12px;
+    text-decoration: none;
+    color: black;
+    align-items: center;
+}
+
+.studentCode {
+    color: #1a4cd6;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 500;
+    min-width: 110px;
+}
+
+.studentName {
+    flex: 1;
+}
+
+/* Détails étudiant */
+.studentDetailsPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.studentInfo {
+    padding: 8px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 1.05em;
+}
+
+.studentInfo i {
+    width: 22px;
+    color: #555;
+}
+
+/* Cours dans la liste d'inscriptions */
+.courseRow {
+    padding: 3px 8px;
+}
+
+.courseRow a {
+    text-decoration: none;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: black;
+}
+
+.courseRow a:hover .courseCode {
+    text-decoration: underline;
+}
+
+.courseSession {
+    color: #888;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.courseCode {
+    color: #1a4cd6;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.courseTitle {
+    flex: 1;
+}
+
+/* Barre de recherche au-dessus de la liste */
+.searchBar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.searchBarItem {
+    flex: 1;
+    padding: 6px 12px;
+    border: 1px solid lightgray;
+    background: white;
+}
+
+/* Mise en surbrillance des résultats de recherche */
+.highlight {
+    background-color: yellow;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.emptyState {
+    color: #888;
+    font-style: italic;
+    padding: 20px;
+    text-align: center;
+}
+
+/* === Page Cours (réutilise les styles existants) === */
+.coursesListLayout {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.courseDetailsPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.courseInfo {
+    padding: 12px 16px;
+    background: #f7f7f7;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.courseCodeBig {
+    font-size: 1.5em;
+    font-family: 'Courier New', Courier, monospace;
+    color: #1a4cd6;
+}
+
+.courseSessionBig {
+    color: #888;
+}
+
+.courseTitleBig {
+    font-size: 1.3em;
+    font-weight: 500;
+}

@@ -1,0 +1,92 @@
+﻿@*
+    Vue principale - Liste des étudiants.
+    Le contenu est rempli par /Students/GetStudents via la classe AutoRefreshedPanel
+    (rafraîchissement automatique aux 5 secondes).
+    La barre de recherche n'apparaît que si Session["Search"] == true (toggle via la loupe).
+*@
+@{
+    ViewBag.PageTitle = "Étudiants";
+    bool search = Session["Search"] != null && (bool)Session["Search"];
+    string searchString = (string)(Session["SearchString"] ?? "");
+    int selectedYear = (int)(Session["CurrentSelectedYear"] ?? 0);
+    var yearsList = (List<int>)(Session["StudentsYearsList"] ?? new List<int>());
+}
+
+@if (search)
+{
+    <!-- Barre de recherche + filtre d'année (cf. PDF page 3) -->
+    <div class="searchBar">
+        <input type="search"
+               id="searchInput"
+               class="section roundedBorder searchBarItem"
+               value="@searchString"
+               placeholder="Recherche..." />
+
+        <select id="yearSelect" class="section roundedBorder searchBarItem">
+            <option value="0">Toutes les années</option>
+            @foreach (int y in yearsList)
+            {
+                if (y == selectedYear)
+                {
+                    <option value="@y" selected>Cohorte @y</option>
+                }
+                else
+                {
+                    <option value="@y">Cohorte @y</option>
+                }
+            }
+        </select>
+    </div>
+}
+
+<!-- Le contenu sera injecté ici par AutoRefreshedPanel -->
+<div id="StudentsListPanel" class="studentsListLayout">
+</div>
+
+@section Scripts {
+    <script>
+        $(() => {
+            // Le panneau d'auto-refresh : appelle /Students/GetStudents toutes les 5 secondes
+            let studentsListPanel = new AutoRefreshedPanel(
+                "StudentsListPanel",
+                "/Students/GetStudents",
+                5 /* secondes */,
+                studentsListPostRefresh);
+
+            let searchKeywordTimer = null;
+            let currentSearchString = "@searchString";
+
+            // Callback après chaque rafraîchissement :
+            //  1) Restaurer l'état ouvert/fermé des balises <details>
+            //  2) Surligner les occurrences de la chaîne de recherche
+            function studentsListPostRefresh() {
+                RestoreDetailsState();
+                HighlightSearchTerm(currentSearchString);
+            }
+
+            // Mise à jour de la chaîne de recherche : on attend 0.3s entre les frappes
+            // puis on envoie la nouvelle valeur au serveur via studentsListPanel.command().
+            // .command(url) appelle l'url puis rafraîchit automatiquement le panneau.
+            $("#searchInput").on('keyup search', function () {
+                clearTimeout(searchKeywordTimer);
+                currentSearchString = $(this).val();
+                searchKeywordTimer = setTimeout(() => {
+                    studentsListPanel.command("/Students/SetSearchString?value=" + encodeURIComponent(currentSearchString));
+                }, 300 /* 0.3 seconde */);
+            });
+
+            // On met en pause le rafraîchissement automatique pendant que l'usager
+            // est en train d'interagir avec les champs de recherche, pour ne pas
+            // perdre le focus à chaque cycle.
+            $("#searchInput").focus(() => studentsListPanel.pause());
+            $("#searchInput").blur(() => studentsListPanel.restart());
+
+            // Filtre d'année
+            $("#yearSelect").on('change', function () {
+                studentsListPanel.command("/Students/SetSearchYear?value=" + $(this).val());
+            });
+            $("#yearSelect").focus(() => studentsListPanel.pause());
+            $("#yearSelect").blur(() => studentsListPanel.restart());
+        });
+    </script>
+}

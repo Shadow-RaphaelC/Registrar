@@ -1,0 +1,33 @@
+﻿@*
+    Vue partielle - Allocations d'un enseignant regroupées par année décroissante (cf. PDF page 9).
+*@
+@model Models.Teacher
+@{
+    var grouped = Model.Allocations
+                       .Where(a => a.Course != null)
+                       .GroupBy(a => a.Year)
+                       .OrderByDescending(g => g.Key);
+}
+
+@if (!Model.Allocations.Any())
+{
+    <div class="emptyState">Aucune allocation.</div>
+}
+
+@foreach (var group in grouped)
+{
+    <details id="teachers_details_year_@group.Key" open>
+        <summary>@group.Key</summary>
+        @foreach (var allocation in group.OrderBy(a => a.Course.Code))
+        {
+            var course = allocation.Course;
+            <div class="courseRow">
+                <a href="/Courses/Details/@course.Id">
+                    <span class="courseSession">[@course.Session]</span>
+                    <span class="courseCode">@course.Code</span>
+                    <span class="courseTitle">@course.Title</span>
+                </a>
+            </div>
+        }
+    </details>
+}

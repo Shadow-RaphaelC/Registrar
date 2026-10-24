@@ -1,0 +1,41 @@
+﻿@*
+    Vue pour modifier la session courante (cf. PDF page 3).
+    L'usager choisit l'année et la session (Automne ou Hiver) qui sera ciblée
+    par les prochaines inscriptions et allocations.
+*@
+@{
+    ViewBag.PageTitle = "Session courrante";
+    int year = (int)ViewBag.Year;
+    bool isAutumn = (bool)ViewBag.IsAutumn;
+}
+
+<form class="form" action="/Sessions/Edit" method="POST">
+    @Html.AntiForgeryToken()
+    <p style="color:#1a4cd6; padding:8px 0">
+        Choisissez l'année et la session pour les prochaines allocations de cours&nbsp;:
+    </p>
+
+    <label for="Year">Année</label>
+    <input id="Year"
+           name="Year"
+           class="form-control"
+           type="number"
+           min="2020"
+           max="2099"
+           value="@year"
+           required />
+
+    <label>Session</label>
+    <div class="radioGroup">
+        <label>
+            <input type="radio" name="Season" value="1" @(isAutumn ? "checked" : "") />
+            Automne
+        </label>
+        <label>
+            <input type="radio" name="Season" value="2" @(!isAutumn ? "checked" : "") />
+            Hiver
+        </label>
+    </div>
+
+    <input id="submit" type="submit" value="Enregistrer" class="btn btn-primary" style="display:none" />
+</form>

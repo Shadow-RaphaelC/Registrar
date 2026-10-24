@@ -1,0 +1,44 @@
+﻿@*
+    Vue détails d'un étudiant (cf. PDF page 4).
+    Affiche les informations + la liste des inscriptions, rafraîchie périodiquement.
+*@
+@model Models.Student
+@{
+    ViewBag.PageTitle = "Étudiant - Détails";
+}
+
+<div class="studentDetailsPanel">
+    <!-- Informations personnelles -->
+    <details open id="students_details_info_@Model.Id">
+        <summary><i class="fa fa-user-graduate"></i> @Model.FirstName @Model.LastName</summary>
+        <div class="studentInfo">
+            <div><i class="fa fa-barcode"></i> @Model.Code</div>
+            <div><i class="fa fa-phone"></i> @Model.Phone</div>
+            <div><i class="fa fa-paper-plane"></i> <a href="mailto:@Model.Email">@Model.Email</a></div>
+            <div><i class="fa fa-cake-candles"></i> @Model.BirthDate.ToString("d MMMM yyyy")</div>
+        </div>
+    </details>
+
+    <!-- Liste des inscriptions, rafraîchie automatiquement par AutoRefreshedPanel -->
+    <h3>Inscriptions</h3>
+    <div id="StudentRegistrationsPanel">
+        @{ Html.RenderPartial("GetStudentRegistrations", Model); }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(() => {
+            // Restaure l'état des <details> au chargement initial
+            RestoreDetailsState();
+
+            // Panneau d'auto-refresh pour les inscriptions
+            // (au cas où un autre usager modifie les inscriptions de cet étudiant)
+            new AutoRefreshedPanel(
+                "StudentRegistrationsPanel",
+                "/Students/GetStudentRegistrations",
+                5 /* secondes */,
+                () => RestoreDetailsState());
+        });
+    </script>
+}

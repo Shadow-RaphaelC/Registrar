@@ -1,0 +1,23 @@
+﻿@*
+    Vue de modification / création d'un enseignant.
+*@
+@model Models.Teacher
+@{
+    bool creating = ViewBag.Creating != null && (bool)ViewBag.Creating;
+    ViewBag.PageTitle = creating ? "Prof - Ajout" : "Prof - Modification";
+    Html.RenderPartial("TeacherForm");
+}
+
+@section Scripts {
+    <script>
+        $(() => {
+            initFormValidation();
+            // Validation AJAX d'unicité du courriel (optionnel chez les profs)
+            addConflictValidation(
+                "/Teachers/CheckEmailConflict",
+                'Email',
+                'submit'
+            );
+        });
+    </script>
+}

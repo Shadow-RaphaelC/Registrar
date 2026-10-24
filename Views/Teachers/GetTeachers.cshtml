@@ -1,0 +1,20 @@
+﻿@*
+    Vue partielle - Liste des enseignants en ordre alphabétique avec avatar (cf. PDF page 8).
+*@
+@model IEnumerable<Models.Teacher>
+
+@if (!Model.Any())
+{
+    <div class="emptyState">Aucun enseignant ne correspond à votre recherche.</div>
+}
+
+@foreach (var teacher in Model)
+{
+    <div class="teacherRow">
+        <a href="/Teachers/Details/@teacher.Id" title="Voir les détails de @teacher.FullName">
+            <div class="teacherAvatarSmall" style="background-image:url('@teacher.Avatar')"></div>
+            <span class="teacherCode">@teacher.Code</span>
+            <span class="teacherName">@teacher.LastName @teacher.FirstName</span>
+        </a>
+    </div>
+}

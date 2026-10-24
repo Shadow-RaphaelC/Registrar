@@ -1,0 +1,29 @@
+﻿@*
+    Vue de modification (et création) d'un étudiant.
+    Charge le formulaire partiel StudentForm.
+    NOTE : la section Scripts ne peut PAS être dans une vue partielle (limitation Razor),
+    elle doit être ici dans la vue principale.
+*@
+@model Models.Student
+@{
+    bool creating = ViewBag.Creating != null && (bool)ViewBag.Creating;
+    ViewBag.PageTitle = creating ? "Étudiant - Ajout" : "Étudiant - Modification";
+    Html.RenderPartial("StudentForm");
+}
+
+@section Scripts {
+    <script>
+        $(() => {
+            // Validation des champs de formulaire (classes CSS .Alpha, .Email, .Phone, etc.)
+            initFormValidation();
+
+            // Validation AJAX d'unicité du courriel.
+            // Bloque le bouton submit si le courriel est déjà utilisé.
+            addConflictValidation(
+                "/Students/CheckEmailConflict", /* URL du service de vérification */
+                'Email',                         /* nom du champ à valider */
+                'submit'                         /* id du bouton submit à bloquer */
+            );
+        });
+    </script>
+}

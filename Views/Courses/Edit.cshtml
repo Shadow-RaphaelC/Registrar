@@ -1,0 +1,23 @@
+﻿@*
+    Vue de modification / création d'un cours.
+*@
+@model Models.Course
+@{
+    bool creating = ViewBag.Creating != null && (bool)ViewBag.Creating;
+    ViewBag.PageTitle = creating ? "Cours - Ajout" : "Cours - Modification";
+    Html.RenderPartial("CourseForm");
+}
+
+@section Scripts {
+    <script>
+        $(() => {
+            initFormValidation();
+            // Validation AJAX d'unicité du sigle
+            addConflictValidation(
+                "/Courses/CheckCodeConflict",
+                'Code',
+                'submit'
+            );
+        });
+    </script>
+}

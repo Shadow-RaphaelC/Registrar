@@ -1,0 +1,43 @@
+﻿@*
+    Vue détails d'un enseignant (cf. PDF page 9).
+    Affiche : informations + avatar + ancienneté + allocations par année.
+*@
+@model Models.Teacher
+@{
+    ViewBag.PageTitle = "Prof - Détails";
+}
+
+<div class="teacherDetailsPanel">
+    <details open id="teachers_details_info_@Model.Id">
+        <summary><i class="fa fa-graduation-cap"></i> @Model.FirstName @Model.LastName</summary>
+        <div class="teacherInfo">
+            <div><i class="fa fa-barcode"></i> @Model.Code</div>
+            <div><i class="fa fa-phone"></i> @Model.Phone</div>
+            @if (!string.IsNullOrWhiteSpace(Model.Email))
+            {
+                <div><i class="fa fa-paper-plane"></i> <a href="mailto:@Model.Email">@Model.Email</a></div>
+            }
+            <div>Embauché le @Model.StartDate.ToString("d MMMM yyyy")</div>
+            <div>@Model.Seniority.ToString("0.0") ans d'ancienneté</div>
+            <div class="teacherAvatarBig" style="background-image:url('@Model.Avatar')"></div>
+        </div>
+    </details>
+
+    <h3>Allocations</h3>
+    <div id="TeacherAllocationsPanel">
+        @{ Html.RenderPartial("GetTeacherAllocations", Model); }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(() => {
+            RestoreDetailsState();
+            new AutoRefreshedPanel(
+                "TeacherAllocationsPanel",
+                "/Teachers/GetTeacherAllocations",
+                5,
+                () => RestoreDetailsState());
+        });
+    </script>
+}

@@ -1,0 +1,84 @@
+﻿@*
+    Formulaire d'un étudiant - utilisé pour Create et Edit.
+    Si creating == true, la section Inscriptions est cachée (cf. PDF page 14).
+*@
+@model Models.Student
+@{
+    bool creating = ViewBag.Creating != null && (bool)ViewBag.Creating;
+    string action = (string)ViewBag.Action ?? (creating ? "Create" : "Edit");
+    string sessionCaption = Models.NextSession.Caption;
+}
+
+<form class="form" action="/Students/@action" method="POST">
+    @Html.AntiForgeryToken() <!-- Jeton anti-contrefaçon de formulaire (CSRF) -->
+    <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+
+    <!-- Section Informations - toujours visible -->
+    <details open id="students_details_info">
+        <summary>Informations - [@Model.Code]</summary>
+
+        <label for="FirstName">Prénom</label>
+        <input id="FirstName"
+               name="FirstName"
+               class="form-control Alpha"
+               placeholder="Prénom"
+               value="@Model.FirstName"
+               required
+               RequireMessage="Veuillez entrer un prénom"
+               InvalidMessage="Le prénom comporte un caractère illégal" />
+
+        <label for="LastName">Nom</label>
+        <input id="LastName"
+               name="LastName"
+               class="form-control Alpha"
+               placeholder="Nom"
+               value="@Model.LastName"
+               required
+               RequireMessage="Veuillez entrer un nom"
+               InvalidMessage="Le nom comporte un caractère illégal" />
+
+        <label for="BirthDate">Date de naissance</label>
+        <input id="BirthDate"
+               name="BirthDate"
+               class="form-control datepicker"
+               value="@(Model.BirthDate.ToString("yyyy-MM-dd"))"
+               required
+               RequireMessage="Veuillez entrer une date"
+               InvalidMessage="Date invalide" />
+
+        <label for="Email">Courriel</label>
+        <input id="Email"
+               name="Email"
+               class="form-control Email"
+               placeholder="Courriel"
+               value="@Model.Email"
+               required
+               RequireMessage="Veuillez entrer un courriel"
+               InvalidMessage="Courriel invalide"
+               CustomErrorMessage="Ce courriel est déjà utilisé" />
+
+        <label for="Phone">Téléphone</label>
+        <input id="Phone"
+               name="Phone"
+               class="form-control Phone"
+               placeholder="(000) 000-0000"
+               value="@Model.Phone"
+               required
+               RequireMessage="Veuillez entrer un téléphone"
+               InvalidMessage="Téléphone invalide" />
+    </details>
+
+    @if (!creating)
+    {
+        <!-- Section Inscriptions - visible uniquement en mode Modification (cf. PDF page 14) -->
+        <details open id="students_details_inscriptions">
+            <summary>Inscriptions : @sessionCaption</summary>
+            @Helper.SelectionLists("selectedCoursesId",
+                (System.Web.Mvc.SelectList)ViewBag.Registrations,
+                (System.Web.Mvc.SelectList)ViewBag.Courses)
+        </details>
+    }
+
+    <!-- Le bouton submit est caché : il est déclenché par l'icône ✓ du header -->
+    <input id="submit" type="submit" value="Enregistrer" class="btn btn-primary" style="display:none" />
+</form>

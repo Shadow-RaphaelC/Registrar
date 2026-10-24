@@ -1,0 +1,87 @@
+﻿@*
+    Formulaire d'un enseignant - utilisé pour Create et Edit.
+    Inclut le contrôle d'upload d'avatar (cf. imageUploader dans image-control.js).
+*@
+@model Models.Teacher
+@{
+    bool creating = ViewBag.Creating != null && (bool)ViewBag.Creating;
+    string action = (string)ViewBag.Action ?? (creating ? "Create" : "Edit");
+    string sessionCaption = Models.NextSession.Caption;
+}
+
+<form class="form" action="/Teachers/@action" method="POST">
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+
+    <details open id="teachers_details_info">
+        <summary>Informations - [@Model.Code]</summary>
+
+        <label for="FirstName">Prénom</label>
+        <input id="FirstName"
+               name="FirstName"
+               class="form-control Alpha"
+               placeholder="Prénom"
+               value="@Model.FirstName"
+               required
+               RequireMessage="Veuillez entrer un prénom"
+               InvalidMessage="Le prénom comporte un caractère illégal" />
+
+        <label for="LastName">Nom</label>
+        <input id="LastName"
+               name="LastName"
+               class="form-control Alpha"
+               placeholder="Nom"
+               value="@Model.LastName"
+               required
+               RequireMessage="Veuillez entrer un nom"
+               InvalidMessage="Le nom comporte un caractère illégal" />
+
+        <label for="StartDate">Date d'embauche</label>
+        <input id="StartDate"
+               name="StartDate"
+               class="form-control datepicker"
+               value="@(Model.StartDate.ToString("yyyy-MM-dd"))"
+               required
+               RequireMessage="Veuillez entrer une date"
+               InvalidMessage="Date invalide" />
+
+        <label for="Email">Courriel</label>
+        <input id="Email"
+               name="Email"
+               class="form-control Email"
+               placeholder="Courriel"
+               value="@Model.Email"
+               CustomErrorMessage="Ce courriel est déjà utilisé"
+               InvalidMessage="Courriel invalide" />
+
+        <label for="Phone">Téléphone</label>
+        <input id="Phone"
+               name="Phone"
+               class="form-control"
+               placeholder="(000) 000-0000 poste 00000"
+               value="@Model.Phone"
+               required
+               RequireMessage="Veuillez entrer un téléphone" />
+
+        <label for="Avatar">Avatar</label>
+        <!-- L'imageUploader gère le drag-and-drop et la conversion base64.
+             Au POST, la valeur sera soit l'URL existante soit du base64. -->
+        <div class='imageUploader'
+             controlId='Avatar'
+             imageSrc='@Model.Avatar'
+             title="Cliquez/glisser une photo">
+        </div>
+    </details>
+
+    @if (!creating)
+    {
+        <details open id="teachers_details_allocations">
+            <summary>Allocation : @sessionCaption</summary>
+            @Helper.SelectionLists("selectedCoursesId",
+                (System.Web.Mvc.SelectList)ViewBag.Allocations,
+                (System.Web.Mvc.SelectList)ViewBag.Courses)
+        </details>
+    }
+
+    <input id="submit" type="submit" value="Enregistrer" class="btn btn-primary" style="display:none" />
+</form>
